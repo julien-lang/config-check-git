@@ -2,8 +2,8 @@
 import argparse
 import logging
 import os
-import sys
 import subprocess
+import urllib.parse
 import yaml
 
 def main():
@@ -12,6 +12,10 @@ def main():
         "tk-framework-shotgunutils": "v4.",
         "tk-framework-widget": "v0.",
     }
+
+    ssh_components = [
+        "tk-flame-projectconnect",
+    ]
 
     lh = logging.StreamHandler()
     lh.setLevel(logging.DEBUG)
@@ -54,14 +58,17 @@ def main():
 
                 continue
 
-            if item["path"] == "https://github.com/shotgunsoftware/tk-flame-projectconnect.git":
-                logger.warning("Ignore {} because private repo. DO it manually!!!!".format(
-                    name,
-                ))
-                continue
- 
+            if name in ssh_components:
+                u =  urllib.parse.urlparse(item["path"])
+                repo_url = "git@{hostname}:{path}".format(
+                    hostname = u.hostname,
+                    path = u.path[1:], # remove leading /
+                )
+            else:
+                repo_url = item["path"]
+
             p = subprocess.run(
-                ["git", "ls-remote", item["path"], item["branch"]],
+                ["git", "ls-remote", repo_url, item["branch"]],
                 check=True, capture_output=True
             )
 
