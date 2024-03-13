@@ -12,7 +12,7 @@ def main():
     args = parser.parse_args()
 
     if not args.folder:
-       args.folder = os.path.abspath(os.path.dirname(__file__))
+       args.folder = os.path.abspath(os.path.curdir)
 
     files_changed = []
     for yml_file in find_yml_files(args.folder):
