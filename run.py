@@ -93,7 +93,7 @@ def main():
             "  New commit: {commit_hash}\n"
             "".format(**item),
         )
-        files_changed.add(yml_file)
+        files_changed.add(item["file"])
 
     print("Number of file changed:", len(files_changed))
     for filename in sorted(files_changed):
